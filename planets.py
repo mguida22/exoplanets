@@ -22,6 +22,14 @@ def cleanup():
         if e.errno != errno.ENOENT:
             raise
 
+def pretty_print(data):
+    for category in data:
+        print('{}:'.format(category))
+        for item in data[category]:
+            print('  {}: {:0.4f}'.format(item, data[category][item]))
+
+        print()
+
 def load_csv(filename):
     log('loading data from {}'.format(filename))
 
@@ -108,6 +116,12 @@ if __name__ == '__main__':
 
     headers, discovery_methods = load_csv(filename)
 
-    results = avg_data_by_bucket(headers, discovery_methods, ['pl_orbper'])
+    results = avg_data_by_bucket(headers, discovery_methods, [
+        'pl_orbper',
+        'pl_massj',
+        'pl_dens'
+    ])
+
+    pretty_print(results)
 
     cleanup()
