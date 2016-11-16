@@ -8,6 +8,7 @@ import csv
 import os
 import sys
 
+
 TMP_FILENAME = 'tmp.csv'
 logging = False
 
@@ -23,12 +24,17 @@ def cleanup():
             raise
 
 def pretty_print(data):
+    data_point = None
     for category in data:
         print('{} (count: {}):'.format(category, data[category]['count']))
         for item in data[category]:
             if item == 'count':
                 continue
-            print('  {}: {:0.4f}'.format(item, data[category][item]))
+            data_point = data[category][item]
+            if data_point > 0.0000:
+                print('  {}: {:0.4f}'.format(item, data_point))
+            else:
+                print('  {}: n/a'.format(item))
 
         print()
 
