@@ -24,8 +24,10 @@ def cleanup():
 
 def pretty_print(data):
     for category in data:
-        print('{}:'.format(category))
+        print('{} (count: {}):'.format(category, data[category]['count']))
         for item in data[category]:
+            if item == 'count':
+                continue
             print('  {}: {:0.4f}'.format(item, data[category][item]))
 
         print()
@@ -75,6 +77,7 @@ def avg_data_by_bucket(headers, buckets, params):
     for bucket in buckets:
         results[bucket] = {}
         results_count[bucket] = {}
+        results[bucket]['count'] = 0
         for param in params:
             results[bucket][param] = 0
             results_count[bucket][param] = 0
@@ -84,10 +87,12 @@ def avg_data_by_bucket(headers, buckets, params):
     bucket = None
     with open(TMP_FILENAME) as infile:
         for line in infile:
+            line_split = line.split(',')
+            bucket = line_split[headers['pl_discmethod']]
+            if bucket:
+                results[bucket]['count'] += 1
             for param in params:
-                line_split = line.split(',')
                 data_point = line_split[headers[param]]
-                bucket = line_split[headers['pl_discmethod']]
                 if data_point and bucket:
                     results[bucket][param] += float(data_point)
                     results_count[bucket][param] += 1
