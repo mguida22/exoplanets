@@ -97,8 +97,14 @@ def avg_data_by_bucket(headers, buckets, params):
                     results[bucket][param] += float(data_point)
                     results_count[bucket][param] += 1
 
-    for param in params:
-        results[bucket][param] = results[bucket][param] / results_count[bucket][param]
+    for bucket in buckets:
+        for param in params:
+            try:
+                results[bucket][param] /= results_count[bucket][param]
+            except ZeroDivisionError:
+                pass
+            except:
+                raise
 
     return results
 
